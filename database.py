@@ -140,7 +140,7 @@ class Database(object):
         
     def _add_user(self, id, user_id, sms_id, payment_hash, payment_request, cost, ispaid, date, service, country):
         try:
-            self.cursor.execute("INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?);", [str(id), str(user_id),str(sms_id), payment_hash, payment_request, str(cost), ispaid, date, service, str(country)])
+            self.cursor.execute("INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ? ,?);", [str(id), str(user_id),str(sms_id), payment_hash, payment_request, str(cost), ispaid, date, service, str(country)])
             self.connection.commit()
         except sqlite3.IntegrityError:
             return
