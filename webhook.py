@@ -12,7 +12,7 @@ def foo(path):
    if request.remote_addr == "165.227.164.18":
         print(path + request.remote_addr + str(request.json)+" fuck meeeeeeee", file=sys.stderr)
         service = Database().get_service(path)
-        phone = requests.get(" http://api.sms-man.com/stubs/handler_api.php?action=getNumber&api_key=$api_key&service="+str(service[0])+"&country="+str(service[1]))
+        phone = requests.get(" http://api.sms-man.com/stubs/handler_api.php?action=getNumber&api_key="+config.APIKEY_SMS+"&service="+str(service[0])+"&country="+str(service[1]))
         print(phone.text)
         #Database().set_balance(path,int(request.json["amount"]/1000))
         #bot = Bot(token=config.BOT_TOKEN)
