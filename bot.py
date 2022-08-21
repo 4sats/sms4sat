@@ -130,7 +130,7 @@ def create_payment(update: Update, context: CallbackContext) -> int:
             text="Please pay this invoice for "+str(cost)+"sats (using coinbase api): "+invoice["payment_request"] +
                 "\n\n or start over /start"
         )
-        Database().add_user(query.id, query.from_user.id, 0,invoice["payment_hash"],invoice["payment_request"],cost,False,time.time())
+        Database().add_user(query.id, query.from_user.id, 0,invoice["payment_hash"],invoice["payment_request"],cost,False,time.time(),data[1],data[0])
     return THIRD
 
 
