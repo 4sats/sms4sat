@@ -125,12 +125,12 @@ def create_payment(update: Update, context: CallbackContext) -> int:
     if price[data[1]]["count"] > 0: 
         sat_to_rub = float(requests.get('https://www.coinbase.com/graphql/query?&operationName=assetInfoQuery&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22b44bc727f7d472e551d5890df5235822410e918ffcbee456e9413b7b55018aa5%22%7D%7D&variables=%7B%22baseSymbol%22%3A%22SATS%22%2C%22targetCurrency%22%3A%22RUB%22%2C%22assetSearchString%22%3A%22%22%7D').json()["data"]["assetBySymbol"]["latestQuote"]["price"])
         cost = int(float(price[data[1]]["cost"])/sat_to_rub) + 1000
-        invoice = requests.post("https://legend.lnbits.com/api/v1/payments", data = '{"out": false,"amount":'+str(cost)+', "webhook":"'+config.WEBHOOK+query.inline_message_id+'"}', headers = {"X-Api-Key": config.APIKEY_LN,"Content-type": "application/json"}).json()
+        invoice = requests.post("https://legend.lnbits.com/api/v1/payments", data = '{"out": false,"amount":'+str(cost)+', "webhook":"'+config.WEBHOOK+query.id+'"}', headers = {"X-Api-Key": config.APIKEY_LN,"Content-type": "application/json"}).json()
         query.edit_message_text(
             text="Please pay this invoice for "+str(cost)+"sats (using coinbase api): "+invoice["payment_request"] +
                 "\n\n or start over /start"
         )
-        Database().add_user(query.inline_message_id, query.from_user.id, 0,invoice["payment_hash"],invoice["payment_request"],cost,False,time.time(),data[1],data[0])
+        Database().add_user(query.id, query.from_user.id, 0,invoice["payment_hash"],invoice["payment_request"],cost,False,time.time(),data[1],data[0])
     return THIRD
 
 
