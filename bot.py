@@ -138,7 +138,7 @@ def show_code(update: Update, context: CallbackContext) -> int:
     """Show new choice of buttons"""
     query = update.callback_query
     #query.answer()
-    sms_id = Database().get_sms(query.id)
+    sms_id = Database().get_sms(query.from_user.id, query.message.message_id)
     print(str(sms_id))
     code = requests.get(" http://api.sms-man.com/stubs/handler_api.php?action=getStatus&api_key="+config.APIKEY_SMS+"&id="+str(sms_id)).text
     if "STATUS_WAIT_CODE" in code:
