@@ -160,6 +160,13 @@ class Database(object):
         self.cursor.execute("SELECT sms_id FROM users WHERE user_id = ? AND message_id = ?;", [str(user_id),str(message_id)])
         result = self.cursor.fetchone()
         return result[0]
+    def get_sms_by_hash(self, payment_hash):
+        self.cursor.execute("SELECT sms_id,cost FROM users WHERE payment_hash = ?;", [str(payment_hash)])
+        result = self.cursor.fetchone()
+        if len(result) > 0:
+            return result
+        else:
+            return []
     def get_cost(self, id):
         self.cursor.execute("SELECT cost FROM users WHERE id = ?;", [str(id)])
         result = self.cursor.fetchone()

@@ -68,6 +68,24 @@ def start(update: Update, context: CallbackContext) -> int:
     update.message.reply_text("Hi! Please choose a country:", reply_markup=reply_markup)
     # Tell ConversationHandler that we're in state `FIRST` now
     return FIRST
+def refund(update: Update, context: CallbackContext):
+    try:
+        payment_hash = context.args[0]
+        check_payment = requests.get("https://legend.lnbits.com/api/v1/payments/"+str(payment_hash), headers = {"X-Api-Key": config.APIKEY_LN,"Content-type": "application/json"}).json()
+        sms_id = Database().get_sms_by_hash(payment_hash)
+        amount = sms_id[1]
+        if check_payment["paid"] == True:
+            get_status = requests.get("http://api.sms-man.com/stubs/handler_api.php?action=getStatus&api_key="+config.APIKEY_SMS+"&id="+str(sms_id[0])).text
+            if "STATUS_OK" in get_status:
+                update.effective_message.reply_text("You have the code already! code:" + get_status.split(":")[1])
+            else:
+                set_status = requests.get("http://api.sms-man.com/stubs/handler_api.php?action=setStatus&api_key="+config.APIKEY_SMS+"&id="+str(sms_id[0])+"&status=-1")
+                lnurlw = requests.post("https://legend.lnbits.com/withdraw/api/v1/links", data = '{"title": "'+refund+'", "min_withdrawable": '+str(amount)+', "max_withdrawable": '+str(amount)+', "uses": 1, "wait_time": 1, "is_unique": true}', headers = {"X-Api-Key": config.APIKEY_LN_ADMIN,"Content-type": "application/json"}).json()
+                update.effective_message.reply_text("Here is your lnurl withdraw:\n `"+lnurlw["lnurl"]+"`", parse_mode= ParseMode.MARKDOWN)
+        else:
+            update.effective_message.reply_text("This invoice has not been paid.")
+    except:
+        update.effective_message.reply_text("Please use the command like this: \n/refund <payment hash>")
 
 
 def start_over(update: Update, context: CallbackContext) -> int:
@@ -148,7 +166,7 @@ def show_code(update: Update, context: CallbackContext) -> int:
     print(str(sms_id))
     code = requests.get(" http://api.sms-man.com/stubs/handler_api.php?action=getStatus&api_key="+config.APIKEY_SMS+"&id="+str(sms_id)).text
     if "STATUS_WAIT_CODE" in code:
-        query.answer("sms not yet recieved!", show_alert = True)
+        query.answer("sms not yet received!", show_alert = True)
     elif "STATUS_OK" in code:
         query.answer()
         query.edit_message_text(
@@ -229,7 +247,7 @@ def main() -> None:
 
     # Add ConversationHandler to dispatcher that will be used for handling updates
     dispatcher.add_handler(conv_handler)
-
+    dispatcher.add_handler(CommandHandler('refund', refund))
     # Start the Bot
     updater.start_polling()
 
