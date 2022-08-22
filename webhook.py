@@ -23,7 +23,7 @@ def foo(path):
         ]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
-        bot.edit_message_text(chat_id=service[2], message_id=int(path), text= "Send verification code to this phone number: +"+number[2] , reply_markup=reply_markup)
+        bot.edit_message_text(inline_message_id=path, text= "Send verification code to this phone number: +"+number[2] , reply_markup=reply_markup)
 
    #update balance
    #send message to user about it
