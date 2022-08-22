@@ -53,6 +53,7 @@ class Database(object):
         cursor = connection.cursor()
         cursor.execute("CREATE TABLE IF NOT EXISTS 'users'"
                        "('id' INTEGER NOT NULL,"
+                       "'message_id' INTEGER NOT NULL,"
                        "'user_id' INTEGER NOT NULL,"
                        "'sms_id' INTEGER NOT NULL,"
                        "'payment_hash' TEXT,"
@@ -133,14 +134,14 @@ class Database(object):
         self.cursor.execute("SELECT rowid, * FROM users;")
         return self.cursor.fetchall()
 
-    def add_user(self, id, user_id, sms_id, payment_hash, payment_request, cost, ispaid, date, service, country):
+    def add_user(self, id, message_id, user_id, sms_id, payment_hash, payment_request, cost, ispaid, date, service, country):
         if self.is_user_saved(id):
             return
-        self._add_user(id, user_id, sms_id, payment_hash, payment_request, cost, ispaid, date, service, country)
+        self._add_user(id, message_id, user_id, sms_id, payment_hash, payment_request, cost, ispaid, date, service, country)
         
-    def _add_user(self, id, user_id, sms_id, payment_hash, payment_request, cost, ispaid, date, service, country):
+    def _add_user(self, id, message_id, user_id, sms_id, payment_hash, payment_request, cost, ispaid, date, service, country):
         try:
-            self.cursor.execute("INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ? ,?);", [str(id), str(user_id),str(sms_id), payment_hash, payment_request, str(cost), ispaid, date, service, str(country)])
+            self.cursor.execute("INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ? ,?, ?);", [str(id), str(message_id), str(user_id),str(sms_id), payment_hash, payment_request, str(cost), ispaid, date, service, str(country)])
             self.connection.commit()
         except sqlite3.IntegrityError:
             return
@@ -156,7 +157,7 @@ class Database(object):
         self.cursor.execute("UPDATE users SET ispaid = ?, sms_id = ? WHERE id = ?;", [ispaid,str(sms_id), str(id)])
         self.connection.commit()
     def get_service(self, id):
-        self.cursor.execute("SELECT service,country,user_id FROM users WHERE id=?;", [str(id)])
+        self.cursor.execute("SELECT service,country,user_id, message_id FROM users WHERE id=?;", [str(id)])
         result = self.cursor.fetchone()
         return result
     def set_unretweet(self, unretweet, rowid):
