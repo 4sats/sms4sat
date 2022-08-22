@@ -160,6 +160,14 @@ class Database(object):
         self.cursor.execute("SELECT sms_id FROM users WHERE user_id = ? AND message_id = ?;", [str(user_id),str(message_id)])
         result = self.cursor.fetchone()
         return result[0]
+    def get_cost(self, id):
+        self.cursor.execute("SELECT cost FROM users WHERE id = ?;", [str(id)])
+        result = self.cursor.fetchone()
+        return result[0]
+    def get_cost2(self, user_id, message_id):
+        self.cursor.execute("SELECT cost FROM users WHERE user_id = ? AND message_id = ?;", [str(user_id),str(message_id)])
+        result = self.cursor.fetchone()
+        return result[0]
     def get_service(self, id):
         self.cursor.execute("SELECT service,country,user_id, message_id FROM users WHERE id=?;", [str(id)])
         result = self.cursor.fetchone()

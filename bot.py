@@ -154,6 +154,13 @@ def show_code(update: Update, context: CallbackContext) -> int:
         query.edit_message_text(
         text="Here is your code: "+str(code.split(":")[1])
         )
+    elif "STATUS_CANCEL" in code:
+        query.answer()
+        amount = Database().get_cost2(query.from_user.id, query.message.message_id)
+        lnurlw = requests.post("https://legend.lnbits.com/withdraw/api/v1/links", data = '{"title": "'+query.id+'", "min_withdrawable": '+str(amount)+', "max_withdrawable": '+str(amount)+', "uses": 1, "wait_time": 1, "is_unique": true}', headers = {"X-Api-Key": config.APIKEY_LN_ADMIN,"Content-type": "application/json"})
+        query.edit_message_text(text= "Sorry something went wrong here is your lnurl withdraw:\n`"+lnurlw["lnurl"]+"`", parse_mode = ParseMode.MARKDOWN )
+
+
     # Transfer to conversation state `SECOND`
     return THIRD
 

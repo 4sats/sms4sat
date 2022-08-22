@@ -1,4 +1,5 @@
 TOKEN = ""
 APIKEY_SMS = ""
 APIKEY_LN = ""
+APIKEY_LN_ADMIN = ""
 WEBHOOK = "https://"
