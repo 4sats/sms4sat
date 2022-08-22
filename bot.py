@@ -18,7 +18,7 @@ import logging,config,requests
 import time
 from urllib import request
 from database import Database
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, ParseMode
 from telegram.ext import (
     Updater,
     CommandHandler,
@@ -127,9 +127,9 @@ def create_payment(update: Update, context: CallbackContext) -> int:
         cost = int(float(price[data[1]]["cost"])/sat_to_rub) + 1000
         invoice = requests.post("https://legend.lnbits.com/api/v1/payments", data = '{"out": false,"amount":'+str(cost)+', "webhook":"'+config.WEBHOOK+query.id+'"}', headers = {"X-Api-Key": config.APIKEY_LN,"Content-type": "application/json"}).json()
         query.edit_message_text(
-            text="Please pay this invoice for "+str(cost)+"sats (using coinbase api): `"+invoice["payment_request"] +
-                "`\n\n or start over /start" 
-            ,parse_mode="Markdown"
+            text="Please pay this invoice for "+str(cost)+"sats (using coinbase api): `"+invoice["payment_request"] +"`"
+                "\n\n or start over /start" 
+            ,parse_mode=ParseMode.MARKDOWN
         )
         Database().add_user(query.id, query.message.message_id, query.from_user.id, 0,invoice["payment_hash"],invoice["payment_request"],cost,False,time.time(),data[1],data[0])
     else:
