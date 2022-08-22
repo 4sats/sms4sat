@@ -13,6 +13,7 @@ def foo(path):
         print(path + request.remote_addr + str(request.json)+" fuck meeeeeeee", file=sys.stderr)
         service = Database().get_service(path)
         phone = requests.get(" http://api.sms-man.com/stubs/handler_api.php?action=getNumber&api_key="+config.APIKEY_SMS+"&service="+str(service[0])+"&country="+str(service[1]))
+        bot = Bot(token=config.TOKEN)
         if "NO_NUMBERS" in phone.text:
             amount = Database().get_cost(path)
             lnurlw = requests.post("https://legend.lnbits.com/withdraw/api/v1/links", data = '{"title": "'+str(path)+'", "min_withdrawable": '+str(amount)+', "max_withdrawable": '+str(amount)+', "uses": 1, "wait_time": 1, "is_unique": true}', headers = {"X-Api-Key": config.APIKEY_LN_ADMIN,"Content-type": "application/json"})
@@ -24,7 +25,6 @@ def foo(path):
         elif "ACCESS_NUMBER" in phone.text:
             number = phone.text.split(":")
             Database().set_sms(number[1],True, path)
-            bot = Bot(token=config.TOKEN)
             keyboard = [
             [
                 InlineKeyboardButton("Get Code", callback_data="check_sms"),
