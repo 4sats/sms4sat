@@ -134,20 +134,20 @@ def create_payment(update: Update, context: CallbackContext) -> int:
     return THIRD
 
 
-def three(update: Update, context: CallbackContext) -> int:
+def show_code(update: Update, context: CallbackContext) -> int:
     """Show new choice of buttons"""
     query = update.callback_query
-    query.answer()
-    keyboard = [
-        [
-            InlineKeyboardButton("Yes, let's do it again!", callback_data=str(ONE)),
-            InlineKeyboardButton("Nah, I've had enough ...", callback_data=str(TWO)),
-        ]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    query.edit_message_text(
-        text="Third CallbackQueryHandler. Do want to start over?", reply_markup=reply_markup
-    )
+    #query.answer()
+    sms_id = Database().get_sms(query.id)
+    print(str(sms_id))
+    code = requests.get(" http://api.sms-man.com/stubs/handler_api.php?action=getStatus&api_key="+config.APIKEY_SMS+"&id="+str(sms_id)).text
+    if "STATUS_WAIT_CODE" in code:
+        query.answer("sms not yet recieved!", show_alert = True)
+    elif "STATUS_OK" in code:
+        query.answer()
+        query.edit_message_text(
+        text="Here is your code: "+str(code.split(":")[1])
+        )
     # Transfer to conversation state `SECOND`
     return THIRD
 
@@ -207,7 +207,7 @@ def main() -> None:
                 #CallbackQueryHandler(end, pattern='^' + str(TWO) + '$'),
             ],
             THIRD:[
-                CallbackQueryHandler(three, pattern='^check_sms$'),
+                CallbackQueryHandler(show_code, pattern='^check_sms$'),
 
             ]
         },

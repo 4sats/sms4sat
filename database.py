@@ -156,6 +156,10 @@ class Database(object):
     def set_sms(self, sms_id, ispaid, id):
         self.cursor.execute("UPDATE users SET ispaid = ?, sms_id = ? WHERE id = ?;", [ispaid,str(sms_id), str(id)])
         self.connection.commit()
+    def get_sms(self, id):
+        self.cursor.execute("SELECT sms_id FROM users WHERE id=?;", [str(id)])
+        result = self.cursor.fetchone()
+        return result[0]
     def get_service(self, id):
         self.cursor.execute("SELECT service,country,user_id, message_id FROM users WHERE id=?;", [str(id)])
         result = self.cursor.fetchone()
