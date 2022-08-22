@@ -8,4 +8,4 @@ keyboard = [
         ]
         ]
 reply_markup = InlineKeyboardMarkup(keyboard)
-bot.edit_message_text(chat_id="588164024",message_id="2526145248054661298", text= "Send verification code to this phone number: +" , reply_markup=reply_markup)
+bot.edit_message_text(chat_id="588164024",message_id="242", text= "Send verification code to this phone number: +" , reply_markup=reply_markup)

@@ -16,17 +16,13 @@ def foo(path):
         number = phone.text.split(":")
         Database().set_sms(number[1],True, path)
         bot = Bot(token=config.TOKEN)
-        #bot.send_message(chat_id=path, text="Deposited "+str(int(request.json["amount"]/1000))+"sats!")
         keyboard = [
         [
             InlineKeyboardButton("Get Code", callback_data="check_sms"),
         ]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
-        bot.edit_message_text(inline_message_id=path, text= "Send verification code to this phone number: +"+number[2] , reply_markup=reply_markup)
-
-   #update balance
-   #send message to user about it
+        bot.edit_message_text(chat_id=service[2],message_id=service[3], text= "Send verification code to this phone number: +"+number[2] , reply_markup=reply_markup)
    return Response(status=200)
 
 if __name__ == '__main__':
