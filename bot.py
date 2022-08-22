@@ -131,6 +131,11 @@ def create_payment(update: Update, context: CallbackContext) -> int:
                 "\n\n or start over /start"
         )
         Database().add_user(query.id, query.message.message_id, query.from_user.id, 0,invoice["payment_hash"],invoice["payment_request"],cost,False,time.time(),data[1],data[0])
+    else:
+        query.edit_message_text(
+            text="This service for This country is not available for now!" +
+                "\n\n start over /start"
+        )
     return THIRD
 
 
