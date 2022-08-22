@@ -16,11 +16,11 @@ def foo(path):
         bot = Bot(token=config.TOKEN)
         if "NO_NUMBERS" in phone.text:
             amount = Database().get_cost(path)
-            lnurlw = requests.post("https://legend.lnbits.com/withdraw/api/v1/links", data = '{"title": "'+str(path)+'", "min_withdrawable": '+str(amount)+', "max_withdrawable": '+str(amount)+', "uses": 1, "wait_time": 1, "is_unique": true}', headers = {"X-Api-Key": config.APIKEY_LN_ADMIN,"Content-type": "application/json"})
+            lnurlw = requests.post("https://legend.lnbits.com/withdraw/api/v1/links", data = '{"title": "'+str(path)+'", "min_withdrawable": '+str(amount)+', "max_withdrawable": '+str(amount)+', "uses": 1, "wait_time": 1, "is_unique": true}', headers = {"X-Api-Key": config.APIKEY_LN_ADMIN,"Content-type": "application/json"}).json()
             bot.edit_message_text(chat_id=service[2],message_id=service[3], text= "Sorry there was no phone numbers for this service at the moment here is your lnurl withdraw:\n`"+lnurlw["lnurl"]+"`", parse_mode = ParseMode.MARKDOWN )
         elif "NO_BALANCE" in phone.text:
             amount = Database().get_cost(path)
-            lnurlw = requests.post("https://legend.lnbits.com/withdraw/api/v1/links", data = '{"title": "'+str(path)+'", "min_withdrawable": '+str(amount)+', "max_withdrawable": '+str(amount)+', "uses": 1, "wait_time": 1, "is_unique": true}', headers = {"X-Api-Key": config.APIKEY_LN_ADMIN,"Content-type": "application/json"})
+            lnurlw = requests.post("https://legend.lnbits.com/withdraw/api/v1/links", data = '{"title": "'+str(path)+'", "min_withdrawable": '+str(amount)+', "max_withdrawable": '+str(amount)+', "uses": 1, "wait_time": 1, "is_unique": true}', headers = {"X-Api-Key": config.APIKEY_LN_ADMIN,"Content-type": "application/json"}).json()
             bot.edit_message_text(chat_id=service[2],message_id=service[3], text= "Sorry the bot is not active rn here is your lnurl withdraw:\n`"+lnurlw["lnurl"]+"`", parse_mode = ParseMode.MARKDOWN)
         elif "ACCESS_NUMBER" in phone.text:
             number = phone.text.split(":")
