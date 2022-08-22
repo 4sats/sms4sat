@@ -149,8 +149,8 @@ class Database(object):
         self.cursor.execute("DELETE FROM users WHERE rowid = ?;", [rowid])
         self.connection.commit()
 
-    def set_ispaid(self, ispaid, rowid):
-        self.cursor.execute("UPDATE users SET ispaid = ? WHERE rowid = ?;", [ispaid, str(rowid)])
+    def set_ispaid(self, ispaid, payment_hash):
+        self.cursor.execute("UPDATE users SET ispaid = ? WHERE payment_hash = ?;", [ispaid, str(payment_hash)])
         self.connection.commit()
 
     def set_sms(self, sms_id, ispaid, id):
@@ -161,7 +161,7 @@ class Database(object):
         result = self.cursor.fetchone()
         return result[0]
     def get_sms_by_hash(self, payment_hash):
-        self.cursor.execute("SELECT sms_id,cost FROM users WHERE payment_hash = ?;", [str(payment_hash)])
+        self.cursor.execute("SELECT sms_id,cost,ispaid FROM users WHERE payment_hash = ?;", [str(payment_hash)])
         result = self.cursor.fetchone()
         if len(result) > 0:
             return result

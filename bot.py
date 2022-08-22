@@ -14,6 +14,7 @@ ConversationHandler.
 Send /start to initiate the conversation.
 Press Ctrl-C on the command line to stop the bot.
 """
+from enum import Flag
 import logging,config,requests
 import time
 from urllib import request
@@ -74,14 +75,15 @@ def refund(update: Update, context: CallbackContext):
         check_payment = requests.get("https://legend.lnbits.com/api/v1/payments/"+str(payment_hash), headers = {"X-Api-Key": config.APIKEY_LN,"Content-type": "application/json"}).json()
         sms_id = Database().get_sms_by_hash(payment_hash)
         amount = sms_id[1]
-        if check_payment["paid"] == True:
+        if check_payment["paid"] == True and sms_id[2]:
             get_status = requests.get("http://api.sms-man.com/stubs/handler_api.php?action=getStatus&api_key="+config.APIKEY_SMS+"&id="+str(sms_id[0])).text
             if "STATUS_OK" in get_status:
                 update.effective_message.reply_text("You have the code already! code:" + get_status.split(":")[1])
             else:
                 set_status = requests.get("http://api.sms-man.com/stubs/handler_api.php?action=setStatus&api_key="+config.APIKEY_SMS+"&id="+str(sms_id[0])+"&status=-1")
-                lnurlw = requests.post("https://legend.lnbits.com/withdraw/api/v1/links", data = '{"title": "refund", "min_withdrawable": '+str(amount)+', "max_withdrawable": '+str(amount)+', "uses": 1, "wait_time": 1, "is_unique": true}', headers = {"X-Api-Key": config.APIKEY_LN_ADMIN,"Content-type": "application/json"}).json()
+                lnurlw = requests.post("https://legend.lnbits.com/withdraw/api/v1/links", data = '{"title": "refund"'+update.effective_message.message_id+', "min_withdrawable": '+str(amount)+', "max_withdrawable": '+str(amount)+', "uses": 1, "wait_time": 1, "is_unique": true}', headers = {"X-Api-Key": config.APIKEY_LN_ADMIN,"Content-type": "application/json"}).json()
                 update.effective_message.reply_text("Here is your lnurl withdraw:\n `"+lnurlw["lnurl"]+"`", parse_mode= ParseMode.MARKDOWN)
+                Database().set_ispaid(False, payment_hash)
         else:
             update.effective_message.reply_text("This invoice has not been paid.")
     #except:
