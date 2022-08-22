@@ -70,7 +70,7 @@ def start(update: Update, context: CallbackContext) -> int:
     # Tell ConversationHandler that we're in state `FIRST` now
     return FIRST
 def refund(update: Update, context: CallbackContext):
-    #try:
+    try:
         payment_hash = context.args[0]
         check_payment = requests.get("https://legend.lnbits.com/api/v1/payments/"+str(payment_hash), headers = {"X-Api-Key": config.APIKEY_LN,"Content-type": "application/json"}).json()
         sms_id = Database().get_sms_by_hash(payment_hash)
@@ -86,8 +86,8 @@ def refund(update: Update, context: CallbackContext):
                 Database().set_ispaid(False, payment_hash)
         else:
             update.effective_message.reply_text("This invoice has not been paid.")
-    #except:
-        #update.effective_message.reply_text("Please use the command like this: \n/refund <payment hash>")
+    except:
+        update.effective_message.reply_text("Please use the command like this: \n/refund <payment hash>")
 
 
 def start_over(update: Update, context: CallbackContext) -> int:
