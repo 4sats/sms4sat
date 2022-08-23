@@ -166,7 +166,7 @@ def show_code(update: Update, context: CallbackContext) -> int:
     #query.answer()
     sms_id = Database().get_sms(query.from_user.id, query.message.message_id)
     print(str(sms_id))
-    code = requests.get(" http://api.sms-man.com/stubs/handler_api.php?action=getStatus&api_key="+config.APIKEY_SMS+"&id="+str(sms_id)).text
+    code = requests.get("http://api.sms-man.com/stubs/handler_api.php?action=getStatus&api_key="+config.APIKEY_SMS+"&id="+str(sms_id)).text
     if "STATUS_WAIT_CODE" in code:
         query.answer("sms not yet received!", show_alert = True)
     elif "STATUS_OK" in code:
@@ -174,6 +174,7 @@ def show_code(update: Update, context: CallbackContext) -> int:
         query.edit_message_text(
         text="Here is your code: "+str(code.split(":")[1])
         )
+        Database().set_ispaid2(False, query.from_user.id, query.message.message_id)
     elif "STATUS_CANCEL" in code:
         query.answer()
         amount = Database().get_cost2(query.from_user.id, query.message.message_id)

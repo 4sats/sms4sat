@@ -152,7 +152,9 @@ class Database(object):
     def set_ispaid(self, ispaid, payment_hash):
         self.cursor.execute("UPDATE users SET ispaid = ? WHERE payment_hash = ?;", [ispaid, str(payment_hash)])
         self.connection.commit()
-
+    def set_ispaid2(self, ispaid, user_id, message_id):
+        self.cursor.execute("UPDATE users SET ispaid = ? WHERE user_id = ?, message_id = ?;", [ispaid, str(user_id),str(message_id)])
+        self.connection.commit()
     def set_sms(self, sms_id, ispaid, id):
         self.cursor.execute("UPDATE users SET ispaid = ?, sms_id = ? WHERE id = ?;", [ispaid,str(sms_id), str(id)])
         self.connection.commit()
