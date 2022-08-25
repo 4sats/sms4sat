@@ -62,6 +62,16 @@ def start(update: Update, context: CallbackContext) -> int:
             InlineKeyboardButton("🇩🇪", callback_data=str(43)),
             InlineKeyboardButton("🇹🇭", callback_data=str(52)),
             InlineKeyboardButton("🇹🇷", callback_data=str(62)),
+        ],
+        [
+            InlineKeyboardButton("🇦🇪", callback_data=str(95)),
+            InlineKeyboardButton("🇮🇳", callback_data=str(22)),
+            InlineKeyboardButton("🇳🇱", callback_data=str(48)),
+            InlineKeyboardButton("🇫🇷", callback_data=str(78)),
+            InlineKeyboardButton("🇮🇹🍕", callback_data=str(86)),
+            InlineKeyboardButton("🇪🇸", callback_data=str(56)),
+            InlineKeyboardButton("🇲🇽🌮", callback_data=str(54)),
+            InlineKeyboardButton("🇸🇻₿", callback_data=str(62)),
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
