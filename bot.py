@@ -153,8 +153,8 @@ def create_payment(update: Update, context: CallbackContext) -> int:
     data = query.data.split("-")
     price = requests.get("http://api.sms-man.com/stubs/handler_api.php?action=getPrices&api_key="+config.APIKEY_SMS+"&country="+data[0]+"&service="+data[1]).json()
     if price[data[1]]["count"] > 0: 
-        sat_to_rub = float(requests.get('https://www.coinbase.com/graphql/query?&operationName=assetInfoQuery&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22b44bc727f7d472e551d5890df5235822410e918ffcbee456e9413b7b55018aa5%22%7D%7D&variables=%7B%22baseSymbol%22%3A%22SATS%22%2C%22targetCurrency%22%3A%22RUB%22%2C%22assetSearchString%22%3A%22%22%7D').json()["data"]["assetBySymbol"]["latestQuote"]["price"])
-        cost = int(float(price[data[1]]["cost"])/sat_to_rub) + 1000
+        sat_to_rub = config.SAT_RUB
+        cost = int(float(price[data[1]]["cost"])/sat_to_rub) + 100
         invoice = requests.post("https://legend.lnbits.com/api/v1/payments", data = '{"out": false,"amount":'+str(cost)+', "webhook":"'+config.WEBHOOK+query.id+'"}', headers = {"X-Api-Key": config.APIKEY_LN,"Content-type": "application/json"}).json()
         query.edit_message_text(
             text="Please pay this invoice for "+str(cost)+"sats : `"+invoice["payment_request"] +"`"
